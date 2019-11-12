@@ -1,0 +1,487 @@
+---
+title: "COMO-W project"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(knitr)
+library(kableExtra)
+```
+
+
+
+<br>
+
+This document is a supplementary material for the following paper: 
+
+McGrath *et al.* (20xx) **Comorbidity within mental disorders: a comprehensive analysis based on 145,990 survey respondents from 27 countries**
+
+**Authors:** [John McGrath](https://qbi.uq.edu.au/profile/745/john-mcgrath), [Carmen Lim](https://orcid.org/0000-0003-1595-6307), [Yan Holtz](www.yan-holtz.com), [Oleguer Plana-Ripoll](https://pure.au.dk/portal/en/persons/oleguer-planaripoll(bdf4b27a-e767-49e7-9c8f-3314033a15b2).html), [Sukanta Saha](https://qbi.uq.edu.au/profile/805/sukanta-saha), [Natalie Momen](https://pure.au.dk/portal/en/persons/natalie-momen(72236ead-7aad-4a1f-9f1e-e199e3f6ad8e).html),...,[Ron Kessler](https://hcp.hms.harvard.edu/people/ronald-c-kessler), [Peter de Jonge](https://www.rug.nl/staff/peter.de.jonge/)
+
+Link to the interactive website with all the results are available [here](https://holtzy.github.io/Como-in-World-Heath-Survey/index.html) 
+
+<br>
+
+**Preamble:**
+<br>
+<br>
+The [WHO World Mental Health Surveys Initiative](https://www.hcp.med.harvard.edu/wmh/) have coordinated a series of general population surveys to estimate the prevalence of mental disorders, to evaluate risk factors for targeted interventions, and to study patterns of barriers to service use. This paper estimates the associations between pairwise DSM-IV mental disorders based on retrospectively reported age-of-onset from 27 surveys. We have examined all 576 logically possible temporally-ordered pairwise associations using Cox Proportional Hazards model. For replication purposes, we have provided codes for the following:  
+
+  - Overall hazard ratios (men, women)
+  
+  - Time lagged hazard ratios
+  
+  - Absolute risk
+  
+<br>
+
+**Analysis:**
+
+<br>
+
+##   {.tabset}
+### 1. Libraries and dataset
+
+<br>
+
+**Load libraries and dataset**
+<br>
+<br>
+
+There were 3 necessary datasets for every WMH survey we had to load prior to analysing data. These are: 
+
+- main dataset (raw variables)
+- diagnostic variable dataset
+- demographics dataset 
+<br>
+
+Each dataset contains a unique **sampleid** for each respondent. This ID will be used when merging dataset. 
+
+<br>
+
+```{sas, eval = FALSE}
+%MACRO make_data (path = , data = );
+DATA out0.&data;
+    MERGE out0.&data._main (IN = In&data._main)
+          out0.&data._dem (IN = In&data._dem)
+          out0.&data._dia (IN = In&data._dia);
+    BY sampleid;
+    IF In&data._main = 1 AND  In&data._dem = 1  AND  In&data._dia = 1;
+RUN;
+%MEND make_data;
+%make_data (path = safrica, data = safrica)
+%make_data (path = ukraine, data = ukraine)
+%make_data (path = argt, data = argentina)
+%make_data (path = medellin, data = medellin) 
+%make_data (path = murcia, data = murcia)   
+%make_data (path = aust, data = australia) 
+%make_data (path = peru, data = peru) 
+%make_data (path = poland, data = poland) 
+%make_data (path = portugal, data = portugal) 
+%make_data (path = nireland, data = nireland) 
+%make_data (path = shenzhen, data = shenzhen) 
+%make_data (path = brazil, data = brazil)  
+%make_data (path = iraq, data = iraq) 
+%make_data (path = romania, data = romania) 
+%make_data (path = bulgaria, data = bulgaria) 
+%make_data (path = nzl, data = nzl) 
+%make_data (path = israel, data = israel) 
+%make_data (path = nigeria, data = nigeria) 
+%make_data (path = lebanon, data = lebanon) 
+%make_data (path = japan, data = japan) 
+%make_data (path = mexico, data = mexico) 
+%make_data (path = colombia, data = colombia) 
+%make_data (path = ncsr, data = ncsr) 
+%make_data (path = esemed, data = esemed) 
+;       
+```
+
+<br>
+**Concatenate all surveys**
+```{sas, eval = FALSE}
+DATA out0.all1;
+	SET out0.colombia 		out0.belgium  		out0.france 		out0.germany 		out0.italy  
+ 		out0.netherlands 	out0.spain 		    out0.mexico 		out0.ncsr 			out0.japanall 
+		out0.lebanon 		out0.nigeriaall 	out0.ukraine 		out0.israel 		out0.nzl 
+		out0.safrica 		out0.bulgaria	 	out0.romania 		out0.iraq 			out0.brazil 
+ 		out0.shenzhen 		out0.nireland 		out0.portugal 		out0.poland 		out0.peru 
+ 		out0.australia 	    out0.murcia 		out0.medellin 		out0.argentina 		;
+
+```
+
+<br>
+
+### 2. Prior-and later disorders & other variables
+
+<br>
+
+The mental disorders included in this publication were:
+
+- **dsm_mde** (major depression), **dsm_bi3** (bipolar disorder), **dsm_dys** (dysthymia), **dsm_pds** (panic disorder), **dsm_gad** (generalized anxiety disorder), **dsm_so** (social phobia), **dsm_sp** (specific phobia), **dsm_ago** (agoraphobia), **dsm_pts** (PTSD), **dsm_ocd** (OCD), **dsm_sad** (child separation anxiety disorder), **dsm_asa** (adult separation anxiety disorder), **dsm_ied** (IED), **dsm_cd** (conduct disorder), **dsm_add** (ADHD), **dsm_odd** (oppositional defiant disorder), **dsm_ano** (anorexia nervosa), **dsm_bul** (bulimia nervosa), **dsm_bingeany** (binge eating disorder), **dsm_ala** (alcohol abuse), **dsm_ald** (alcohol dependence), **dsm_dra** (drug abuse), **dsm_drd** (drug dependence). 
+
+<br>
+Here is a hypothetical dataset of respondents with major depression, social phobia, panic disorder, alcohol abuse and the age of onset for each disorder (**mde_ond**, **so_ond**, **pd_ond**, **ala_ond**).
+<br>
+<br>
+
+```{r, echo = FALSE}
+person<- c("1001", 
+          "1002", 
+          "1003",
+          "1004"
+          )
+age<- c(22,70,66,18)
+dsm_mde<-c("Yes","Yes","No","No")
+mde_ond <-c(15,35, " "," ")
+dsm_so <- c("Yes","No","No","No")
+so_ond<-c("14"," "," "," ")
+dsm_pds <- c("No","Yes","No","No")
+pds_ond<-c(" ",33," "," ")
+dsm_ala <- c("No","Yes","No","No")
+ala_ond <- c(" ",22," "," ")
+
+d<- data.frame(person,age,dsm_mde,mde_ond, dsm_so, so_ond, dsm_pds, pds_ond,dsm_ala, ala_ond)
+ 
+d %>% 
+  knitr::kable(format = "html")%>%
+  kable_styling()
+```
+
+### 3. Break ties
+<br>
+ 
+It is common for a person's prior disorder and later disorder to occur on the same year (ties). In a time-to-event setting, individuals are followed until the outcome (later disorder), and these persons would not be considered to be exposed to the prior disorder. This would underestimate all the associations, given that concurrent pairs of disorders can never occur. For this reason, we decided to identify and break ties.
+
+We will use major depression and GAD pair as an example to demonstrate how we allocate ties.
+
+First we calculate the number of respondents that developed prior disorder before their later disorder. Then we calculated the number of respondents with both disorders excluding those with same year onset. 
+<br>
+<br>
+
+```{sas, eval = FALSE}
+%MACRO mde (var = gad, var1 = gad, n =  1 ); 
+DATA temp;	
+	SET out0.all1;
+
+	  IF dsm_mde = 1 AND dsm_&var. = 1 THEN DO;
+		/*Step 1a: Create indicator where MDE precedes other disorder*/
+		IF mde_ond < &var1._ond THEN mde_&var. = 1; ELSE mde_&var. = 0;
+		/*Step 1b: Create indicator where MDE occurs in the same year as other disorder*/
+		IF mde_ond = &var1._ond THEN mde_&var._same = 1; ELSE  mde_&var._same = 0;
+		/*Step 1c: Create indicator where other disorder precedes MDE*/
+		IF mde_ond > &var1._ond THEN &var._mde = 1; ELSE &var._mde = 0;
+	END;
+RUN;
+
+	%MACRO subset(where = , var = , i = , j =  );
+	PROC FREQ DATA = temp;	&where	TABLE &var /LIST MISSING OUT = data&i.;	RUN; 
+	DATA data&i. (KEEP = j COUNT&i.);
+		SET data&i.;
+		%IF &i = 1 OR &i = 3%THEN %DO;
+		IF _N_ = 1;
+		%END;
+		%IF &i ~= 1 %THEN %DO;
+		IF _N_ = 2;
+		%END;
+		j = &j.;
+		RENAME count = count&i.;
+	RUN;
+	%MEND subset;
+
+	/*Step 1d: Compute crosstabs to calculate respondents in each temporal sequence bucket*/
+	%subset(var = sample_sel&n. , i = 1, j = 1)
+	%subset(var = sample_sel&n. , i = 2, j = 1)
+	%subset(where = WHERE sample_sel&n. = 1 AND dsm_mde = 1 AND dsm_&var. = 1;, var = mde_&var., i = 3, j = 1)
+	%subset(where = WHERE sample_sel&n. = 1 AND dsm_mde = 1 AND dsm_&var. = 1;, var = mde_&var., i = 4, j = 1)
+	%subset(where = WHERE sample_sel&n. = 1 AND dsm_mde = 1 AND dsm_&var. = 1;, var = mde_&var._same, i = 5, j = 1)
+	%subset(where = WHERE sample_sel&n. = 1 AND dsm_mde = 1 AND dsm_&var. = 1;, var = &var._mde, i = 6, j = 1)
+	;
+
+	/*Step 1e: Combine the above results into a single line*/
+	DATA &var;	MERGE %DO i = 1 %TO 6; data&i.  %END; ;BY j; RUN;
+
+	/*Step 1f: Compute crosstabs to calculate the total sample size used, number with both dx*/
+	DATA &var (DROP = count1 count3);
+		SET &var;
+		total = count1 + count2;
+		RENAME count2 = sample_sel  count4 = atob count5 = sameonset count6 = btoa;
+	RUN;
+	DATA &var  ;
+		SET &var;
+		bothdx = atob+sameonset+btoa;
+	RUN;
+	PROC PRINT DATA = &var.;ID atob sameonset btoa bothdx sample_sel; RUN;
+	DATA _NULL_;
+		SET &var.;
+		CALL SYMPUT("sample_sel",sample_sel);
+		CALL SYMPUT("atob",atob);
+		CALL SYMPUT("sameonset",sameonset);
+		CALL SYMPUT("btoa",btoa);
+
+		prop = atob/(atob+btoa);
+		n_extract = INT(prop*sameonset);
+		CALL SYMPUT("prop",prop);
+		CALL SYMPUT("n_extract",n_extract);
+	RUN;
+	%PUT the proportion of  dsm_mde to dsm_&var1.  is &prop;
+	%PUT number needs to be sampled from the full sample is &n_extract;
+	 
+	PROC SURVEYSELECT DATA = temp METHOD = SYS SEED = 88888 N = &n_extract OUT = temp1;
+		WHERE mde_&var._same = 1;
+		CONTROL cnum age sex ;
+	RUN;
+	DATA temp;	SET temp; IF mde_&var._same = 1 THEN DELETE; new_mde_ond = mde_ond;flag = 0; RUN;
+	/*Allocating a proportion of ties to a year before*/
+	DATA temp1;	SET temp1; new_mde_ond = mde_ond - 1;flag = 1; RUN;
+	DATA new;SET temp temp1 ; RUN;
+
+```
+
+### 4. Cox Proportional Hazards Model
+<br>
+<br>
+
+**Split follow-up time - Construct data set with multiple records per person**
+<br>
+<br>
+
+```{sas, eval = FALSE}
+ 
+
+	DATA new2;
+		SET new;
+
+		%LET string = pd_ond, 	sp_ond,  so_ond,  ano_ond, 	bul_ond,  bingeany_ond, ocd_ond,
+					  asa_ond,	sad_ond, add_ond, odd_ond,  pts_ond,  ied_ond, 		cd_ond, 	
+					  ago_ond, 	dys_ond, ala_ond, ald_ond2, dra_ond2, drd_ond2, 	tbd_ond;
+
+		%LET var1 = mde; 		%LET ovar1 =  new_mde_ond;
+		%LET var2 = pd;  		%LET ovar2 =  pd_ond;
+		%LET var3 = sp;  		%LET ovar3 =  sp_ond;
+		%LET var4 = so;  		%LET ovar4 =  so_ond;
+		%LET var5 = ano; 		%LET ovar5 =  ano_ond;
+		%LET var6 = bul; 		%LET ovar6 =  bul_ond;
+		%LET var7 = bingeany; 	%LET ovar7 =  bingeany_ond;
+		%LET var8 = ocd; 		%LET ovar8 =  ocd_ond;
+		%LET var9 = asa;		%LET ovar9 =  asa_ond;
+		%LET var10 = sad;		%LET ovar10 =  sad_ond;
+		%LET var11 = add;		%LET ovar11 =  add_ond;
+		%LET var12 = odd;		%LET ovar12 =  odd_ond;
+		%LET var13 = pts;		%LET ovar13 =  pts_ond;
+		%LET var14 = ied;		%LET ovar14 =  ied_ond;
+		%LET var15 = cd;		%LET ovar15 =  cd_ond;
+		%LET var16 = ago;		%LET ovar16 =  ago_ond;
+		%LET var17 = dys;		%LET ovar17 =  dys_ond;
+		%LET var18 = ala;		%LET ovar18 =  ala_ond;
+		%LET var19 = ald;		%LET ovar19 =  ald_ond2;
+		%LET var20 = dra;		%LET ovar20 =  dra_ond2;
+		%LET var21 = drd;		%LET ovar21 =  drd_ond2;
+		%LET var22 = tbd;		%LET ovar22 =  tbd_ond;
+
+		*Initialize the time dependent covariate, exposure to start at time 1; 
+		expo_&var1 = 0;
+		expo_&var2._&var1 = 0;   expo_&var3._&var1 = 0;  expo_&var4._&var1 = 0; 
+		expo_&var5._&var1 = 0;   expo_&var6._&var1 = 0;  expo_&var7._&var1 = 0;
+		expo_&var8._&var1 = 0;   expo_&var9._&var1 = 0;  expo_&var10._&var1 = 0;
+		expo_&var11._&var1 = 0;  expo_&var12._&var1 = 0; expo_&var13._&var1 = 0;
+		expo_&var14._&var1 = 0;  expo_&var15._&var1 = 0; expo_&var16._&var1 = 0;
+		expo_&var17._&var1 = 0;  expo_&var18._&var1 = 0; expo_&var19._&var1 = 0;
+		expo_&var20._&var1 = 0;  expo_&var21._&var1 = 0; expo_&var22._&var1 = 0; 
+		start = 1;
+
+		IF dsm_&var1 = 0 THEN DO;
+			stop = SMALLEST(1,&string.  ) ;
+			i = 0;
+			tot = 0;
+			two_dx = 0; 
+			threeormore_dx = 0;
+			OUTPUT;
+
+			%DO b = 2 %TO 23;
+					IF stop < age THEN DO;
+						start = stop;
+						stop = SMALLEST(&b.,&string.  );
+						
+						i = 0;
+						IF start = &ovar2  AND . < &ovar2  THEN expo_&var2._&var1 = 1;
+						IF start = &ovar3  AND . < &ovar3  THEN expo_&var3._&var1 = 1;
+						IF start = &ovar4  AND . < &ovar4  THEN expo_&var4._&var1 = 1;
+						IF start = &ovar5  AND . < &ovar5  THEN expo_&var5._&var1 = 1;
+						IF start = &ovar6  AND . < &ovar6  THEN expo_&var6._&var1 = 1;
+						IF start = &ovar7  AND . < &ovar7  THEN expo_&var7._&var1 = 1;
+						IF start = &ovar8  AND . < &ovar8  THEN expo_&var8._&var1 = 1;
+						IF start = &ovar9  AND . < &ovar9  THEN expo_&var9._&var1 = 1;
+						IF start = &ovar10  AND . < &ovar10  THEN expo_&var10._&var1 = 1;
+						IF start = &ovar11  AND . < &ovar11  THEN expo_&var11._&var1 = 1;
+						IF start = &ovar12  AND . < &ovar12  THEN expo_&var12._&var1 = 1;
+						IF start = &ovar13  AND . < &ovar13  THEN expo_&var13._&var1 = 1;
+						IF start = &ovar14  AND . < &ovar14  THEN expo_&var14._&var1 = 1;
+						IF start = &ovar15  AND . < &ovar15  THEN expo_&var15._&var1 = 1;
+						IF start = &ovar16  AND . < &ovar16  THEN expo_&var16._&var1 = 1;
+						IF start = &ovar17  AND . < &ovar17  THEN expo_&var17._&var1 = 1;
+						IF start = &ovar18  AND . < &ovar18  THEN expo_&var18._&var1 = 1;
+						IF start = &ovar19  AND . < &ovar19   THEN expo_&var19._&var1 = 1;
+						IF start = &ovar20  AND . < &ovar20   THEN expo_&var20._&var1 = 1;
+						IF start = &ovar21  AND . < &ovar21   THEN expo_&var21._&var1 = 1;
+						IF start = &ovar22  AND . < &ovar22   THEN expo_&var22._&var1 = 1;
+
+						tot = SUM(	expo_&var2._&var1,	expo_&var3._&var1,	expo_&var4._&var1,	
+						           expo_&var5._&var1,	expo_&var6._&var1, expo_&var7._&var1,	expo_&var8._&var1,	expo_&var9._&var1,	expo_&var10._&var1, expo_&var11._&var1,
+expo_&var12._&var1,	expo_&var13._&var1,	expo_&var14._&var1,	expo_&var15._&var1,	expo_&var16._&var1,
+expo_&var17._&var1,	expo_&var18._&var1,	expo_&var19._&var1,	expo_&var20._&var1,	expo_&var21._&var1,
+expo_&var22._&var1);
+						two_dx = 0; three_dx = 0;fourormore_dx = 0;
+						IF tot = 2 THEN two_dx = 1;
+						IF tot >=3 THEN three_dx = 1;
+						IF tot >= 4 THEN fourormore_dx = 1;
+						
+						*IF stop  > age OR stop = . THEN stop = age;
+						IF start = . THEN DELETE;
+						
+						OUTPUT;	
+					END;
+					
+				%END;
+				DROP b;
+		END;
+		ELSE DO;
+				stop = SMALLEST(1,&string. ,new_&var1._ond) ;
+				i = 0;
+				expo_&var1 = 0;
+				expo_&var2._&var1 = 0;   expo_&var3._&var1 = 0;  expo_&var4._&var1 = 0; 
+				expo_&var5._&var1 = 0;   expo_&var6._&var1 = 0;  expo_&var7._&var1 = 0;
+				expo_&var8._&var1 = 0;   expo_&var9._&var1 = 0;  expo_&var10._&var1 = 0;
+				expo_&var11._&var1 = 0;  expo_&var12._&var1 = 0; expo_&var13._&var1 = 0;
+				expo_&var14._&var1 = 0;  expo_&var15._&var1 = 0; expo_&var16._&var1 = 0;
+				expo_&var17._&var1 = 0;  expo_&var18._&var1 = 0; expo_&var19._&var1 = 0;
+				expo_&var20._&var1 = 0;  expo_&var21._&var1 = 0; expo_&var22._&var1 = 0;   
+				tot = 0;
+				two_dx = 0; 
+				threeormore_dx = 0;
+				OUTPUT;
+				
+				%DO a = 2 %TO 23;
+					IF stop < age THEN DO;
+						start = stop;
+						stop = SMALLEST(&a.,&string. ,&ovar1);
+						
+						IF start = &ovar1 THEN DO; stop= &ovar1+1; END;
+						
+						IF stop  > age OR stop = . THEN stop = age;
+						i = 0;
+						IF start = &ovar1  THEN expo_&var1 = 1; 
+						IF expo_&var1 = 1 THEN i = 1; 
+						IF start = &ovar2  AND . < &ovar2 < &ovar1 THEN expo_&var2._&var1 = 1;
+						IF start = &ovar3  AND . < &ovar3 < &ovar1 THEN expo_&var3._&var1 = 1;
+						IF start = &ovar4  AND . < &ovar4 < &ovar1 THEN expo_&var4._&var1 = 1;
+						IF start = &ovar5  AND . < &ovar5 < &ovar1 THEN expo_&var5._&var1 = 1;
+						IF start = &ovar6  AND . < &ovar6 < &ovar1 THEN expo_&var6._&var1 = 1;
+						IF start = &ovar7  AND . < &ovar7 < &ovar1 THEN expo_&var7._&var1 = 1;
+						IF start = &ovar8  AND . < &ovar8 < &ovar1 THEN expo_&var8._&var1 = 1;
+						IF start = &ovar9  AND . < &ovar9 < &ovar1 THEN expo_&var9._&var1 = 1;
+						IF start = &ovar10  AND . < &ovar10 < &ovar1 THEN expo_&var10._&var1 = 1;
+						IF start = &ovar11  AND . < &ovar11 < &ovar1 THEN expo_&var11._&var1 = 1;
+						IF start = &ovar12  AND . < &ovar12 < &ovar1 THEN expo_&var12._&var1 = 1;
+						IF start = &ovar13  AND . < &ovar13 < &ovar1 THEN expo_&var13._&var1 = 1;
+						IF start = &ovar14  AND . < &ovar14 < &ovar1 THEN expo_&var14._&var1 = 1;
+						IF start = &ovar15  AND . < &ovar15 < &ovar1 THEN expo_&var15._&var1 = 1;
+						IF start = &ovar16  AND . < &ovar16 < &ovar1 THEN expo_&var16._&var1 = 1;
+						IF start = &ovar17  AND . < &ovar17 < &ovar1 THEN expo_&var17._&var1 = 1;
+						IF start = &ovar18  AND . < &ovar18 < &ovar1 THEN expo_&var18._&var1 = 1;
+						IF start = &ovar19  AND . < &ovar19 < &ovar1 THEN expo_&var19._&var1 = 1;
+						IF start = &ovar20  AND . < &ovar20 < &ovar1 THEN expo_&var20._&var1 = 1;
+						IF start = &ovar21  AND . < &ovar21 < &ovar1 THEN expo_&var21._&var1 = 1;
+						IF start = &ovar22  AND . < &ovar22 < &ovar1 THEN expo_&var22._&var1 = 1;
+
+						tot = SUM(	expo_&var2._&var1,	expo_&var3._&var1,	expo_&var4._&var1,	expo_&var5._&var1,	expo_&var6._&var1,
+									expo_&var7._&var1,	expo_&var8._&var1,	expo_&var9._&var1,	expo_&var10._&var1,	expo_&var11._&var1,
+									expo_&var12._&var1,	expo_&var13._&var1,	expo_&var14._&var1,	expo_&var15._&var1,	expo_&var16._&var1,
+									expo_&var17._&var1,	expo_&var18._&var1,	expo_&var19._&var1,	expo_&var20._&var1,	expo_&var21._&var1,
+									expo_&var22._&var1);
+						two_dx = 0; three_dx = 0;fourormore_dx = 0;
+						IF tot = 2 THEN two_dx = 1;
+						IF tot >=3 THEN three_dx = 1;
+						IF tot >= 4 THEN fourormore_dx = 1;
+						
+						
+						OUTPUT;
+					END;
+					
+				%END;
+				DROP a;
+		END;
+	RUN; 
+	DATA new2a;
+		SET new2;
+		IF dsm_mde = 1 THEN DO;
+			IF start >= &ovar1  THEN DELETE;
+		END;
+		IF stop = . THEN stop = age;
+	RUN;
+	
+	 DATA new3;
+		SET new2;
+		IF i = 1 AND start = &ovar1 AND stop = &ovar1 + 1;
+	RUN; 
+	DATA new3a;
+		SET new3;
+						/*t1 = new_mde_ond + 2;	t2 = new_mde_ond + 4;	t5 = new_mde_ond + 9;	t10 = new_mde_ond + 19; t15 = new_mde_ond + 70;*/
+						t2 = new_mde_ond + 3;	t5 = new_mde_ond + 8;	t10 = new_mde_ond + 18;	t15 = new_mde_ond + 33; t15a = new_mde_ond + 70;
+						
+						IF start = new_mde_ond  THEN DO;
+							start = new_mde_ond;
+							stop = new_mde_ond + 1 ;
+							i = 1;
+							OUTPUT;
+
+							start = stop;
+							stop = SMALLEST(1,t2,t5,t10,t15,t15a);
+							IF stop > age OR stop = . THEN stop = age;
+							i = 2;
+							IF  start = stop THEN DELETE;
+							OUTPUT;
+
+							start = stop;
+							stop = SMALLEST(2,t2,t5,t10,t15,t15a);
+							IF stop > age OR stop = . THEN stop = age;
+							i = 3;
+							IF  start = stop THEN DELETE;
+							OUTPUT;
+
+							start = stop;
+							stop = SMALLEST(3,t2,t5,t10,t15,t15a);
+							IF stop > age OR stop = . THEN stop = age;
+							i = 4;
+							IF  start = stop THEN DELETE;
+							OUTPUT;
+
+							start = stop;
+							stop = SMALLEST(4,t2,t5,t10,t15,t15a);
+							IF stop > age OR stop = . THEN stop = age;
+							i = 5;
+							IF  start = stop THEN DELETE;
+							OUTPUT;
+
+							start = stop;
+							stop = SMALLEST(5,t2,t5,t10,t15,t15a);
+							IF stop > age OR stop = . THEN stop = age;
+							i = 6;
+							IF  start = stop THEN DELETE;
+							OUTPUT;
+						END; 	
+						IF stop < age THEN DO;
+							start = stop;
+							stop = age;
+							OUTPUT;
+						END;
+						
+	RUN; 
+	PROC SORT DATA = new2a; BY sampleid; RUN;
+	PROC SORT DATA = new3a; BY sampleid; RUN;
+	DATA new4;
+		SET new2a new3a;
+		BY sampleid;
+	RUN;
+	DATA new4; SET new4; IF start = stop THEN DELETE;RUN;
+```
