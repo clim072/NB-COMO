@@ -17,46 +17,42 @@ This document is a supplementary material for the following paper:
 
 McGrath *et al.* (20xx) **Comorbidity within mental disorders: a comprehensive analysis based on 145,990 survey respondents from 27 countries**
 
-**Authors:** [John McGrath](https://qbi.uq.edu.au/profile/745/john-mcgrath), [Carmen Lim](https://orcid.org/0000-0003-1595-6307), [Yan Holtz](www.yan-holtz.com), [Oleguer Plana-Ripoll](https://pure.au.dk/portal/en/persons/oleguer-planaripoll(bdf4b27a-e767-49e7-9c8f-3314033a15b2).html), [Sukanta Saha](https://qbi.uq.edu.au/profile/805/sukanta-saha), [Natalie Momen](https://pure.au.dk/portal/en/persons/natalie-momen(72236ead-7aad-4a1f-9f1e-e199e3f6ad8e).html),...,[Ron Kessler](https://hcp.hms.harvard.edu/people/ronald-c-kessler), [Peter de Jonge](https://www.rug.nl/staff/peter.de.jonge/)
-
-Link to the interactive website with all the results are available [here](https://holtzy.github.io/Como-in-World-Heath-Survey/index.html) 
+**Authors:** [John McGrath](https://qbi.uq.edu.au/profile/745/john-mcgrath), [Carmen Lim](https://qbi.uq.edu.au/profile/1186/carmen-lim), [Yan Holtz](www.yan-holtz.com), [Oleguer Plana-Ripoll](https://pure.au.dk/portal/en/persons/oleguer-planaripoll(bdf4b27a-e767-49e7-9c8f-3314033a15b2).html), [Sukanta Saha](https://qbi.uq.edu.au/profile/805/sukanta-saha), [Natalie Momen](https://pure.au.dk/portal/en/persons/natalie-momen(72236ead-7aad-4a1f-9f1e-e199e3f6ad8e).html),...,[Ron Kessler](https://hcp.hms.harvard.edu/people/ronald-c-kessler), [Peter de Jonge](https://www.rug.nl/staff/peter.de.jonge/)
 
 <br>
 
 **Preamble:**
 <br>
 <br>
-The [WHO World Mental Health Surveys Initiative](https://www.hcp.med.harvard.edu/wmh/) have coordinated a series of general population surveys to estimate the prevalence of mental disorders, to evaluate risk factors for targeted interventions, and to study patterns of barriers to service use. This paper estimates the associations between pairwise DSM-IV mental disorders based on retrospectively reported age-of-onset from 27 surveys. We have examined all 576 logically possible temporally-ordered pairwise associations using Cox Proportional Hazards model. For replication purposes, we have provided codes for the following:  
+The [WHO World Mental Health Surveys Initiative](https://www.hcp.med.harvard.edu/wmh/) have coordinated a series of general population surveys to estimate the prevalence of mental disorders, to evaluate risk factors for targeted interventions, and to study patterns of barriers to service use. This paper estimates the associations between 24 DSM-IV mental disorders based on retrospectively reported age-of-onset from 27 surveys. We have examined all 576 logically possible temporally-ordered pairwise associations using Cox Proportional Hazards model. For replication purposes, we have provided **SAS codes** to estimate:  
 
-  - Overall hazard ratios (men, women)
+  - Overall hazard ratios  
   
   - Time lagged hazard ratios
   
-  - Absolute risk
+  - cumulative incidence curves (absolute risk)
   
 <br>
-
-**Analysis:**
-
+Link to the interactive website with all the results are available [here.](https://holtzy.github.io/Como-in-World-Heath-Survey/index.html) 
+<br>
 <br>
 
-##   {.tabset}
+
+##  {.tabset .tabset-fade}
+
 ### 1. Libraries and dataset
 
 <br>
 
-**Load libraries and dataset**
+**Data preparation**
 <br>
 <br>
 
-There were 3 necessary datasets for every WMH survey we had to load prior to analysing data. These are: 
 
-- main dataset (raw variables)
-- diagnostic variable dataset
-- demographics dataset 
-<br>
+For this paper, we had to load 3 datasets for every WMH survey prior to analysing data. These are (i) main dataset (raw variables), (ii) diagnostic variable dataset, and (iii) demographics variable dataset. Each dataset contains a unique **_sampleid_** for each respondent. **_sampleid_** will be used to merge dataset. 
 
-Each dataset contains a unique **sampleid** for each respondent. This ID will be used when merging dataset. 
+We had to load 3 datasets for every WMH survey prior to analysing data. These are (i) main dataset (raw variables), (ii) diagnostic variable dataset, and (iii) demographics variable dataset. Each dataset contains a unique **_sampleid_** for each respondent. **_sampleid_** will be used to merge dataset. 
+
 
 <br>
 
@@ -107,70 +103,93 @@ DATA out0.all1;
 		out0.safrica 		out0.bulgaria	 	out0.romania 		out0.iraq 			out0.brazil 
  		out0.shenzhen 		out0.nireland 		out0.portugal 		out0.poland 		out0.peru 
  		out0.australia 	    out0.murcia 		out0.medellin 		out0.argentina 		;
-
+RUN;
 ```
 
-<br>
 
-### 2. Prior-and later disorders & other variables
-
-<br>
-
-The mental disorders included in this publication were:
-
-- **dsm_mde** (major depression), **dsm_bi3** (bipolar disorder), **dsm_dys** (dysthymia), **dsm_pds** (panic disorder), **dsm_gad** (generalized anxiety disorder), **dsm_so** (social phobia), **dsm_sp** (specific phobia), **dsm_ago** (agoraphobia), **dsm_pts** (PTSD), **dsm_ocd** (OCD), **dsm_sad** (child separation anxiety disorder), **dsm_asa** (adult separation anxiety disorder), **dsm_ied** (IED), **dsm_cd** (conduct disorder), **dsm_add** (ADHD), **dsm_odd** (oppositional defiant disorder), **dsm_ano** (anorexia nervosa), **dsm_bul** (bulimia nervosa), **dsm_bingeany** (binge eating disorder), **dsm_ala** (alcohol abuse), **dsm_ald** (alcohol dependence), **dsm_dra** (drug abuse), **dsm_drd** (drug dependence). 
+### 2. Mental disorders
 
 <br>
-Here is a hypothetical dataset of respondents with major depression, social phobia, panic disorder, alcohol abuse and the age of onset for each disorder (**mde_ond**, **so_ond**, **pd_ond**, **ala_ond**).
+<br>
+**Mental disorders**
 <br>
 <br>
+
+The 24 mental disorders included in this publication were **_dsm_mde_** (major depression), **_dsm_bi3_** (bipolar disorder), **_dsm_dys_** (dysthymia), **_dsm_pds_** (panic disorder), **_dsm_gad_** (generalized anxiety disorder), **_dsm_so_** (social phobia), **_dsm_sp_** (specific phobia), **_dsm_ago_** (agoraphobia), **_dsm_pts_** (PTSD), **_dsm_ocd_** (OCD), **_dsm_sad_** (child separation anxiety disorder), **_dsm_asa_** (adult separation anxiety disorder), **_dsm_ied_** (IED), **_dsm_cd_** (conduct disorder), **_dsm_add_** (ADHD), **dsm_odd** (oppositional defiant disorder), **_dsm_ano_** (anorexia nervosa), **_dsm_bul_** (bulimia nervosa), **_dsm_bingeany_** (binge eating disorder), **_dsm_ala_** (alcohol abuse), **_dsm_ald_** (alcohol dependence), **_dsm_dra_** (drug abuse), and **_dsm_drd_** (drug dependence). 
+
+<br>
+
+However, not all the surveys assess all the disorders listed above. When deriving the estimates for each pair of disorders, surveys that did not assess the disorders of interest were excluded from the analyses. For more information, please see list of disorders.xlsx. 
+<br>
+<br>
+
+**Dataset structure**
+<br>
+<br>
+
+Below is an illustration of the dataset structure. For simplicity purposes, we will only consider 6 mental disorders with major depression, separation anxiety, social phobia, specific phobia, panic disorder, alcohol abuse and the age of onset for each disorder (**mde_ond**, **sad_ond**, **so_ond**, **sp_ond**, **pd_ond**, **ala_ond**). For example, respondent 1001 developed major depression at age 15 and alcohol abuse at age 20 prior to his interview at age 22. 
+ 
+
+<br>
+
 
 ```{r, echo = FALSE}
-person<- c("1001", 
+sampleid<- c("1001", 
           "1002", 
           "1003",
           "1004"
           )
 age<- c(22,70,66,18)
+sex <- c("F", "M", "M", "F")
 dsm_mde<-c("Yes","Yes","No","No")
 mde_ond <-c(15,35, " "," ")
-dsm_so <- c("Yes","No","No","No")
-so_ond<-c("14"," "," "," ")
+dsm_sad <- c("No","No","No","Yes")
+sad_ond <- c("", "","", "10")
+dsm_so <- c("No","No","No","Yes")
+so_ond<-c(""," "," ","8")
+dsm_sp <- c("No", "Yes", "No", "No")
+sp_ond<-c(" ","9"," "," ")
+
 dsm_pds <- c("No","Yes","No","No")
 pds_ond<-c(" ",33," "," ")
-dsm_ala <- c("No","Yes","No","No")
-ala_ond <- c(" ",22," "," ")
+dsm_ala <- c("Yes","Yes","No","No")
+ala_ond <- c("20","22"," "," ")
 
-d<- data.frame(person,age,dsm_mde,mde_ond, dsm_so, so_ond, dsm_pds, pds_ond,dsm_ala, ala_ond)
+d<- data.frame(sampleid,age,sex,dsm_mde,mde_ond,dsm_sad, sad_ond, dsm_so, so_ond,dsm_sp, sp_ond, dsm_pds, pds_ond,dsm_ala, ala_ond)
  
 d %>% 
   knitr::kable(format = "html")%>%
   kable_styling()
 ```
 
+
+
 ### 3. Break ties
+
+<br>
+
+**Break ties**
+<br>
 <br>
  
-It is common for a person's prior disorder and later disorder to occur on the same year (ties). In a time-to-event setting, individuals are followed until the outcome (later disorder), and these persons would not be considered to be exposed to the prior disorder. This would underestimate all the associations, given that concurrent pairs of disorders can never occur. For this reason, we decided to identify and break ties.
+The WMH surveys assessed age of onset of disorders in whole years, and respondents may report occurrences of two or more disorders in any given year (i.e. presence of ties). Exclusion of these ties would underestimate all the associations. In keeping with our [previous analyses](https://jamanetwork.com/journals/jamapsychiatry/fullarticle/2720421), we broke ties by randomly reassigning a proportion of those with the same year onset to having the prior disorder a year earlier. For illustrative purposes, we will use **_major depression_** as prior disorder and **_alcohol abuse_** as later disorder to demonstrate how we reallocate ties.
 
-We will use major depression and GAD pair as an example to demonstrate how we allocate ties.
-
-First we calculate the number of respondents that developed prior disorder before their later disorder. Then we calculated the number of respondents with both disorders excluding those with same year onset. 
 <br>
 <br>
 
 ```{sas, eval = FALSE}
-%MACRO mde (var = gad, var1 = gad, n =  1 ); 
+%MACRO mde (var = ala, n =  1 ); 
 DATA temp;	
 	SET out0.all1;
 
+     /*Identify respondents with both disorder of interest*/
 	  IF dsm_mde = 1 AND dsm_&var. = 1 THEN DO;
-		/*Step 1a: Create indicator where MDE precedes other disorder*/
-		IF mde_ond < &var1._ond THEN mde_&var. = 1; ELSE mde_&var. = 0;
-		/*Step 1b: Create indicator where MDE occurs in the same year as other disorder*/
-		IF mde_ond = &var1._ond THEN mde_&var._same = 1; ELSE  mde_&var._same = 0;
-		/*Step 1c: Create indicator where other disorder precedes MDE*/
-		IF mde_ond > &var1._ond THEN &var._mde = 1; ELSE &var._mde = 0;
+		/*Step 1: Create variable for depression onset prior to alcohol abuse onset*/
+		IF mde_ond < &var._ond THEN mde_&var. = 1; ELSE mde_&var. = 0;
+		/*Step 2: Create variable for depression onset in same year as alcohol abuse onset*/
+		IF mde_ond = &var._ond THEN mde_&var._same = 1; ELSE  mde_&var._same = 0;
+		/*Step 3: Create variable for depression onset after alcohol abuse onset*/
+		IF mde_ond > &var._ond THEN &var._mde = 1; ELSE &var._mde = 0;
 	END;
 RUN;
 
@@ -189,19 +208,18 @@ RUN;
 	RUN;
 	%MEND subset;
 
-	/*Step 1d: Compute crosstabs to calculate respondents in each temporal sequence bucket*/
-	%subset(var = sample_sel&n. , i = 1, j = 1)
-	%subset(var = sample_sel&n. , i = 2, j = 1)
-	%subset(where = WHERE sample_sel&n. = 1 AND dsm_mde = 1 AND dsm_&var. = 1;, var = mde_&var., i = 3, j = 1)
-	%subset(where = WHERE sample_sel&n. = 1 AND dsm_mde = 1 AND dsm_&var. = 1;, var = mde_&var., i = 4, j = 1)
-	%subset(where = WHERE sample_sel&n. = 1 AND dsm_mde = 1 AND dsm_&var. = 1;, var = mde_&var._same, i = 5, j = 1)
-	%subset(where = WHERE sample_sel&n. = 1 AND dsm_mde = 1 AND dsm_&var. = 1;, var = &var._mde, i = 6, j = 1)
+	/*Step 4: Compute crosstabs to calculate respondents in each category*/
+	%subset(var = sample_sel&n.,i = 1, j = 1)
+	%subset(where = WHERE sample_sel&n. = 1 AND dsm_mde = 1 AND dsm_&var. = 1;,var = mde_&var.,i = 2, j = 1)
+	%subset(where = WHERE sample_sel&n. = 1 AND dsm_mde = 1 AND dsm_&var. = 1;,var = mde_&var.,i = 3, j = 1)
+	%subset(where = WHERE sample_sel&n. = 1 AND dsm_mde = 1 AND dsm_&var. = 1;,var = mde_&var._same,i = 4, j = 1)
+	%subset(where = WHERE sample_sel&n. = 1 AND dsm_mde = 1 AND dsm_&var. = 1;,var = &var._mde,i = 5, j = 1)
 	;
 
-	/*Step 1e: Combine the above results into a single line*/
-	DATA &var;	MERGE %DO i = 1 %TO 6; data&i.  %END; ;BY j; RUN;
+	/*Step 5: Combine the above results into a single line*/
+	DATA &var;	MERGE %DO i = 1 %TO 5; data&i.  %END; ;BY j; RUN;
 
-	/*Step 1f: Compute crosstabs to calculate the total sample size used, number with both dx*/
+	/*Step 6: Turn the numbers from crosstabs into a macro variable*/
 	DATA &var (DROP = count1 count3);
 		SET &var;
 		total = count1 + count2;
@@ -224,37 +242,71 @@ RUN;
 		CALL SYMPUT("prop",prop);
 		CALL SYMPUT("n_extract",n_extract);
 	RUN;
-	%PUT the proportion of  dsm_mde to dsm_&var1.  is &prop;
+	%PUT the proportion of  dsm_mde to dsm_&var.  is &prop;
 	%PUT number needs to be sampled from the full sample is &n_extract;
 	 
+  /*Step 7: Use the SURVEYSELECT procedure to sample respondents with same year onset*/
 	PROC SURVEYSELECT DATA = temp METHOD = SYS SEED = 88888 N = &n_extract OUT = temp1;
 		WHERE mde_&var._same = 1;
-		CONTROL cnum age sex ;
+		CONTROL country age sex ;
 	RUN;
+
+   /*Step 8: Error checking mechanism*/
+  
+  /* Delete respondents with same year onset in the TEMP dataset*/
 	DATA temp;	SET temp; IF mde_&var._same = 1 THEN DELETE; new_mde_ond = mde_ond;flag = 0; RUN;
-	/*Allocating a proportion of ties to a year before*/
+
+	/* TEMP1 from SURVEYSELECT will contain respondents whom we need to reassign to having the 
+  prior disorder the year before*/
 	DATA temp1;	SET temp1; new_mde_ond = mde_ond - 1;flag = 1; RUN;
+
+  /*Concatenate both TEMP and TEMP1*/
 	DATA new;SET temp temp1 ; RUN;
+%MEND;
 
 ```
 
-### 4. Cox Proportional Hazards Model
+### 4.Time-varying variables  
+<br>
+
+**Split the time interval for each respondent**
 <br>
 <br>
 
-**Split follow-up time - Construct data set with multiple records per person**
+
+We have performed our analysis using the counting process method. We started by constructing a dataset that contains multiple records for every respondents, with each record corresponds to an interval of time during which the variable of interest remain constant. For respondents without comorbid disorders, only one interval is needed. For respondents with comorbid disorders, multiple time intervals maybe required depending on each respondent's number of comorbid disorders (including the prior disorder). 
+
+Here is a brief explanation of the codes below on how to construct the dataset with multiple records using major depression as the prior disorder:
+
+Briefly, the 'IF-DO' statement begins a block of definitions for **_those without the later disorder_**. The stop time for these respondents is set to be the same as the age at interview because these respondents do not have the later disorder. They are considered to be censored at their age of interview.  Step 2 and 3 create some indicator variables that tell us when a respondent's disorder status changes. The 'ELSE-DO' statement begins a block of variable definitions for **_those with the later disorder_**. The stop time for these respondents is set to be the age of onset of the later disorder. Step 7 and 8 create some indicator variables that tell us when a respondent's disorder status changes. 
+
+The DO statements in each block loops over the list of mental disorders studied in this paper, where a time interval will be created for every additional disorder that a respondent had up until their the onset of the later disorder or age at interview (whichever occurs first). The OUTPUT statement writes the record to the new dataset. By default, all variables in the original dataset are included in this record. 
+
+
+For handling time-varying variables, we have utilised  the counting process method which means there maybe multiple records for every respondents, with each record corresponding to an interval of time during with the variable of interest remain constant. Here is a brief explanation of how it works, the 
+'IF-DO' statement begins a block of definitions for those without **_later disorder_**. The stop time for these respondents is set to be the same as the age at interview. The OUTPUT statement writes the record to the new dataset. By default, all variables in the original dataset are included in this record. The 'ELSE-DO' statement begins a block of variable definitions for those with **_later disorder_**. 
+_Note: our prior disorder is still major depression_
+
 <br>
 <br>
 
 ```{sas, eval = FALSE}
- 
+%MACRO count_proc (var = , n =  1 );  
 
+/* Step 1: Data are expanded from one record per respondent to one record per interval between each disorder 
+onset, per respondent*/
+	
 	DATA new2;
 		SET new;
-
+    
+    /*Define a string of disorder onsets*/
 		%LET string = pd_ond, 	sp_ond,  so_ond,  ano_ond, 	bul_ond,  bingeany_ond, ocd_ond,
 					  asa_ond,	sad_ond, add_ond, odd_ond,  pts_ond,  ied_ond, 		cd_ond, 	
-					  ago_ond, 	dys_ond, ala_ond, ald_ond2, dra_ond2, drd_ond2, 	tbd_ond;
+					  ago_ond, 	dys_ond, ala_ond, ald_ond2, dra_ond2, drd_ond2, 	tbd_ond,
+					  gad_ond,  bi3_ond;
+
+    
+      /*var1-var24 = dx acronyms, ovar1-ovar24 = disorder onset*/
 
 		%LET var1 = mde; 		%LET ovar1 =  new_mde_ond;
 		%LET var2 = pd;  		%LET ovar2 =  pd_ond;
@@ -278,9 +330,22 @@ RUN;
 		%LET var20 = dra;		%LET ovar20 =  dra_ond2;
 		%LET var21 = drd;		%LET ovar21 =  drd_ond2;
 		%LET var22 = tbd;		%LET ovar22 =  tbd_ond;
+		%LET var23 = gad;		%LET ovar23 =  gad_ond;
+		%LET var24 = bi3;		%LET ovar24 =  bi3_ond;
 
-		*Initialize the time dependent covariate, exposure to start at time 1; 
+
+
+		/* Step 2: Create time-varying variables for major depression*/ 
 		expo_&var1 = 0;
+
+		/* Step 3: Create time-varying variables for other mental disorders*/ 
+      expo_&var2._&var1 = 0;   expo_&var3._&var1 = 0;  expo_&var4._&var1 = 0; 
+
+		/* Step 2: Create time-varying variables for major depression*/ 
+		expo_&var1 = 0;
+
+		/* Step 3: Create time-varying variables for other mental disorders. 
+    If other disorder precedes major depression, then these variables will be coded 1*/
 		expo_&var2._&var1 = 0;   expo_&var3._&var1 = 0;  expo_&var4._&var1 = 0; 
 		expo_&var5._&var1 = 0;   expo_&var6._&var1 = 0;  expo_&var7._&var1 = 0;
 		expo_&var8._&var1 = 0;   expo_&var9._&var1 = 0;  expo_&var10._&var1 = 0;
@@ -288,22 +353,28 @@ RUN;
 		expo_&var14._&var1 = 0;  expo_&var15._&var1 = 0; expo_&var16._&var1 = 0;
 		expo_&var17._&var1 = 0;  expo_&var18._&var1 = 0; expo_&var19._&var1 = 0;
 		expo_&var20._&var1 = 0;  expo_&var21._&var1 = 0; expo_&var22._&var1 = 0; 
-		start = 1;
+		expo_&var23._&var1 = 0;  expo_&var24._&var1 = 0; 
+		
+    /* Step 4: Set start time = 1*/ 
+    start = 1;
 
-		IF dsm_&var1 = 0 THEN DO;
-			stop = SMALLEST(1,&string.  ) ;
+    /* Step 5: Later disorder is not present*/ 
+
+    /* Step 5: If later disorder is not present, then the start of the interval is 1, stop of the interval is age at interview*/ 
+
+    IF dsm_&var = 0 THEN DO;
+			stop = age;
 			i = 0;
-			tot = 0;
-			two_dx = 0; 
-			threeormore_dx = 0;
-			OUTPUT;
+		OUTPUT;
 
-			%DO b = 2 %TO 23;
+      /* Step 5: If later disorder is not present, then the start of the interval is 1, stop of the interval is age at interview*/ 
+   		%DO b = 2 %TO 24;
 					IF stop < age THEN DO;
+            /*assign a new start time if a change in status has occurred*/ 
 						start = stop;
 						stop = SMALLEST(&b.,&string.  );
-						
 						i = 0;
+            /*If other disorder precedes major depression, then these variables will be coded 1*/
 						IF start = &ovar2  AND . < &ovar2  THEN expo_&var2._&var1 = 1;
 						IF start = &ovar3  AND . < &ovar3  THEN expo_&var3._&var1 = 1;
 						IF start = &ovar4  AND . < &ovar4  THEN expo_&var4._&var1 = 1;
@@ -325,30 +396,27 @@ RUN;
 						IF start = &ovar20  AND . < &ovar20   THEN expo_&var20._&var1 = 1;
 						IF start = &ovar21  AND . < &ovar21   THEN expo_&var21._&var1 = 1;
 						IF start = &ovar22  AND . < &ovar22   THEN expo_&var22._&var1 = 1;
+						IF start = &ovar23  AND . < &ovar23   THEN expo_&var23._&var1 = 1;
+						IF start = &ovar24  AND . < &ovar24  THEN expo_&var24._&var1 = 1;
 
-						tot = SUM(	expo_&var2._&var1,	expo_&var3._&var1,	expo_&var4._&var1,	
-						           expo_&var5._&var1,	expo_&var6._&var1, expo_&var7._&var1,	expo_&var8._&var1,	expo_&var9._&var1,	expo_&var10._&var1, expo_&var11._&var1,
-expo_&var12._&var1,	expo_&var13._&var1,	expo_&var14._&var1,	expo_&var15._&var1,	expo_&var16._&var1,
-expo_&var17._&var1,	expo_&var18._&var1,	expo_&var19._&var1,	expo_&var20._&var1,	expo_&var21._&var1,
-expo_&var22._&var1);
-						two_dx = 0; three_dx = 0;fourormore_dx = 0;
-						IF tot = 2 THEN two_dx = 1;
-						IF tot >=3 THEN three_dx = 1;
-						IF tot >= 4 THEN fourormore_dx = 1;
-						
-						*IF stop  > age OR stop = . THEN stop = age;
 						IF start = . THEN DELETE;
 						
-						OUTPUT;	
+						OUTPUT;	 
 					END;
-					
 				%END;
 				DROP b;
 		END;
+    
+    /* Step 6: Later disorder is present*/ 
 		ELSE DO;
 				stop = SMALLEST(1,&string. ,new_&var1._ond) ;
 				i = 0;
+
+        /* Step 7: Create time-varying variables for major depression*/ 
 				expo_&var1 = 0;
+      
+        /* Step 8: Create time-varying variables for other mental disorders*/ 
+        /*If other disorder precedes major depression, then these variables will be coded 1*/
 				expo_&var2._&var1 = 0;   expo_&var3._&var1 = 0;  expo_&var4._&var1 = 0; 
 				expo_&var5._&var1 = 0;   expo_&var6._&var1 = 0;  expo_&var7._&var1 = 0;
 				expo_&var8._&var1 = 0;   expo_&var9._&var1 = 0;  expo_&var10._&var1 = 0;
@@ -356,20 +424,21 @@ expo_&var22._&var1);
 				expo_&var14._&var1 = 0;  expo_&var15._&var1 = 0; expo_&var16._&var1 = 0;
 				expo_&var17._&var1 = 0;  expo_&var18._&var1 = 0; expo_&var19._&var1 = 0;
 				expo_&var20._&var1 = 0;  expo_&var21._&var1 = 0; expo_&var22._&var1 = 0;   
-				tot = 0;
-				two_dx = 0; 
-				threeormore_dx = 0;
+				expo_&var23._&var1 = 0;  expo_&var24._&var1 = 0; 
 				OUTPUT;
 				
-				%DO a = 2 %TO 23;
+				%DO a = 2 %TO 25;
 					IF stop < age THEN DO;
+            /*assign a new start time if a change in status has occurred*/ 
 						start = stop;
 						stop = SMALLEST(&a.,&string. ,&ovar1);
-						
+            
+          /*Error checking mechanism*/						
 						IF start = &ovar1 THEN DO; stop= &ovar1+1; END;
-						
 						IF stop  > age OR stop = . THEN stop = age;
+
 						i = 0;
+            /*If other disorder precedes major depression, then these variables will be coded 1*/
 						IF start = &ovar1  THEN expo_&var1 = 1; 
 						IF expo_&var1 = 1 THEN i = 1; 
 						IF start = &ovar2  AND . < &ovar2 < &ovar1 THEN expo_&var2._&var1 = 1;
@@ -393,28 +462,20 @@ expo_&var22._&var1);
 						IF start = &ovar20  AND . < &ovar20 < &ovar1 THEN expo_&var20._&var1 = 1;
 						IF start = &ovar21  AND . < &ovar21 < &ovar1 THEN expo_&var21._&var1 = 1;
 						IF start = &ovar22  AND . < &ovar22 < &ovar1 THEN expo_&var22._&var1 = 1;
+						IF start = &ovar23  AND . < &ovar23 < &ovar1 THEN expo_&var23._&var1 = 1;
+						IF start = &ovar24  AND . < &ovar24 < &ovar1 THEN expo_&var24._&var1 = 1;
 
-						tot = SUM(	expo_&var2._&var1,	expo_&var3._&var1,	expo_&var4._&var1,	expo_&var5._&var1,	expo_&var6._&var1,
-									expo_&var7._&var1,	expo_&var8._&var1,	expo_&var9._&var1,	expo_&var10._&var1,	expo_&var11._&var1,
-									expo_&var12._&var1,	expo_&var13._&var1,	expo_&var14._&var1,	expo_&var15._&var1,	expo_&var16._&var1,
-									expo_&var17._&var1,	expo_&var18._&var1,	expo_&var19._&var1,	expo_&var20._&var1,	expo_&var21._&var1,
-									expo_&var22._&var1);
-						two_dx = 0; three_dx = 0;fourormore_dx = 0;
-						IF tot = 2 THEN two_dx = 1;
-						IF tot >=3 THEN three_dx = 1;
-						IF tot >= 4 THEN fourormore_dx = 1;
-						
-						
-						OUTPUT;
+          OUTPUT;
 					END;
-					
 				%END;
 				DROP a;
 		END;
 	RUN; 
+
+  /*Error checking mechanism*/
 	DATA new2a;
 		SET new2;
-		IF dsm_mde = 1 THEN DO;
+		IF dsm_&var1 = 1 THEN DO;
 			IF start >= &ovar1  THEN DELETE;
 		END;
 		IF stop = . THEN stop = age;
@@ -424,14 +485,20 @@ expo_&var22._&var1);
 		SET new2;
 		IF i = 1 AND start = &ovar1 AND stop = &ovar1 + 1;
 	RUN; 
+
+
+/* Step 9: This step is to change the stop interval to 1,2,5,10,15 years since the onset of prior disorder*/
+
+/*This step is to change the stop interval to 1,2,5,10,15 years since the onset of prior disorder*/
+
+
 	DATA new3a;
 		SET new3;
-						/*t1 = new_mde_ond + 2;	t2 = new_mde_ond + 4;	t5 = new_mde_ond + 9;	t10 = new_mde_ond + 19; t15 = new_mde_ond + 70;*/
-						t2 = new_mde_ond + 3;	t5 = new_mde_ond + 8;	t10 = new_mde_ond + 18;	t15 = new_mde_ond + 33; t15a = new_mde_ond + 70;
+		  t2 = &ovar1 + 3;	t5 = &ovar1 + 8;	t10 = &ovar1 + 18;	t15 = &ovar1 + 33; t15a = &ovar1 + 70;
 						
-						IF start = new_mde_ond  THEN DO;
-							start = new_mde_ond;
-							stop = new_mde_ond + 1 ;
+						IF start = &ovar1  THEN DO;
+							start = &ovar1;
+							stop = &ovar1 + 1 ;
 							i = 1;
 							OUTPUT;
 
@@ -475,7 +542,6 @@ expo_&var22._&var1);
 							stop = age;
 							OUTPUT;
 						END;
-						
 	RUN; 
 	PROC SORT DATA = new2a; BY sampleid; RUN;
 	PROC SORT DATA = new3a; BY sampleid; RUN;
@@ -484,4 +550,314 @@ expo_&var22._&var1);
 		BY sampleid;
 	RUN;
 	DATA new4; SET new4; IF start = stop THEN DELETE;RUN;
+%MEND;
+```
+
+<br>
+<br>
+
+**Dataset structure**
+<br>
+<br>
+
+Like previous example, we will only consider 6 mental disorders with major depression, social phobia, specific phobia, separation anxiety disorder, panic disorder, alcohol abuse. Major depression is considered to be the prior disorder. 
+
+Respondent 1001 developed major depression at age 15 with separation anxiety at age 7, social phobia at age 14 prior to his interview at age 22. 
+
+```{r, echo = FALSE}
+respondent<- c("1001", " "," "," "," "," ")
+age<- c(22," "," "," "," "," ")
+start <- c("1","7","14","15", "16", "18")
+stop <- c("7","14","15", "16", "18", "22")
+time <-c("0","0","0","0-1 year", "1-2 years", "2-5 years")
+time.mde<-c("0","0","0","1","1","1")
+time.ala<-c("0","0","0","0","0","0")
+time.so<-c("0","0","1","1","1","1")
+time.pds<-c("0","0","0","0","0","0")
+time.sad<-c("0","1","1","1","1","1")
+time.sp<-c("0","0","0","0","0","0")
+
+d<- data.frame(respondent, age, start, stop,time, time.mde, time.so, time.pds, time.sad, time.sp, time.ala)
+ 
+d %>% 
+  knitr::kable(format = "html")%>%
+  kable_styling()
+```
+
+<br>
+Respondent 1002 developed major depression at age 35 with specific phobia at age 9, alcohol abuse at age 22, panic disorder at age 33 prior to his interview at age 70. 
+
+
+```{r, echo = FALSE}
+respondent<- c("1002", " "," "," "," "," ", " "," "," "," ")
+age<- c(70," "," "," "," "," "," "," "," "," ")
+start <- c("1","9","22","33", "35", "36", "38", "43", "53", "68")
+stop <- c("9","22","33", "35", "36", "38", "43", "53","68", "70")
+time <-c("0","0","0","0", "0-1 year", "1-2 years", "2-5 years", "5-10 years", "10-15 years", "> 15 years")
+time.mde<-c("0","0","0","0", "1","1","1", "1","1","1")
+time.ala<-c("0","0","1","1", "1","1","1", "1","1","1")
+time.so<-c("0","0","0","0", "0","0","0","0","0","0")
+time.pds<-c("0","0","0","1", "1","1","1", "1","1","1")
+time.sad<-c("0","0","0","0","0","0","0","0","0","0")
+time.sp<-c("0","1","1","1", "1","1","1", "1","1","1")
+
+d<- data.frame(respondent, age, start, stop,time, time.mde, time.so, time.pds, time.sad, time.sp, time.ala)
+ 
+d %>% 
+  knitr::kable(format = "html")%>%
+  kable_styling()
+```
+
+<br>
+Respondent 1003 did not developed major depression and do not have other comorbid disorders. 
+
+
+```{r, echo = FALSE}
+respondent<- c("1003")
+age<- c(66)
+start <- c("1")
+stop <- c("66")
+time <-c("0")
+time.mde<-c("0")
+time.ala<-c("0")
+time.so<-c("0")
+time.pds<-c("0")
+time.sad<-c("0")
+time.sp<-c("0")
+
+d<- data.frame(respondent, age, start, stop,time, time.mde, time.so, time.pds, time.sad, time.sp, time.ala)
+ 
+d %>% 
+  knitr::kable(format = "html")%>%
+  kable_styling()
+```
+
+<br>
+Respondent 1004 did not developed major depression but has other comorbid disorders: social phobia at age 8, separation anxiety at age 10 prior to his interview at age 18. 
+
+
+```{r, echo = FALSE}
+respondent<- c("1004", " "," "," ")
+age<- c(18," "," "," ")
+start <- c("1","8","10","12")
+stop <- c("8","10","12", "18")
+time <-c("0","0","0","0")
+time.mde<-c("0","0","0","0")
+time.ala<-c("0","0","0","0")
+time.so<-c("0","1","1","1")
+time.pds<-c("0","0","0","0")
+time.sad<-c("0","0","1","1")
+time.sp<-c("0","0","0","0")
+```
+
+<br>
+Respondent 1002 developed major depression at age 35 with specific phobia at age 9, alcohol abuse at age 22, panic disorder at age 33 prior to his interview at age 70. 
+
+
+```{r, echo = FALSE}
+respondent<- c("1002", " "," "," "," "," ", " "," "," "," ")
+age<- c(70," "," "," "," "," "," "," "," "," ")
+start <- c("1","9","22","33", "35", "36", "38", "43", "53", "68")
+stop <- c("9","22","33", "35", "36", "38", "43", "53","68", "70")
+time <-c("0","0","0","0", "0-1 year", "1-2 years", "2-5 years", "5-10 years", "10-15 years", "> 15 years")
+time.mde<-c("0","0","0","0", "1","1","1", "1","1","1")
+time.ala<-c("0","0","1","1", "1","1","1", "1","1","1")
+time.so<-c("0","0","0","0", "0","0","0","0","0","0")
+time.pds<-c("0","0","0","1", "1","1","1", "1","1","1")
+time.sad<-c("0","0","0","0","0","0","0","0","0","0")
+time.sp<-c("0","1","1","1", "1","1","1", "1","1","1")
+
+d<- data.frame(respondent, age, start, stop,time, time.mde, time.so, time.pds, time.sad, time.sp, time.ala)
+ 
+d %>% 
+  knitr::kable(format = "html")%>%
+  kable_styling()
+```
+
+
+### 5. Overall hazard ratios
+<br>
+
+**Overall hazard ratios**
+<br>
+<br>
+
+To estimate the model, we use the counting process syntax, specifying both the starting time and the stopping time for each record.
+
+<br>
+<br>
+
+```{r, eval = FALSE}
+%MACRO a(var = , n = , weight = , country =);
+PROC SURVEYPHREG DATA = new4;
+		WHERE &weight >0 AND sample_sel&n.  = 1;
+		CLUSTER secu;
+		STRATA str15;
+		WEIGHT &weight;		
+		MODEL (start,stop)*dsm_&var.(0)	  =  	&country	
+												age18_29 	 age30_44		age45_59
+												sexf
+												expo_&priordx/ RISKLIMIT TIES = EFRON;
+	RUN;
+%MEND;
+%a(var = ala, n = 7, weight = alwt,
+	 country = colombia	 	australia 	iraq 		nigeriaall	mexico
+			   romania 	 	brazil 		bulgaria 	lebanon 	peru	
+			   safrica 	 	belgium 	france 		germany		italy 	
+			   netherlands  spain 		japanall 	nzl 		nireland 
+			   portugal 	israel 		poland 		murcia		argentina
+			   medellin 	ukraine);
+
+```
+
+
+
+### 6. Lagged hazard ratios
+<br>
+
+**Lagged hazard ratios**
+<br>
+<br>
+
+
+```{sas, eval = FALSE }
+%MACRO lag_models (priordx = , weight = , var = , country = , n = );
+DATA new4;
+		SET new4;
+
+		zerotooneyr_&priordx = 0; onetotwoyrs_&priordx = 0; twotofiveyrs_&priordx = 0; fivetotenyrs_&priordx =0; 
+		tentofifteenyrs_&priordx =0; fifteenormoreyrs_&priordx = 0;
+		IF i = 1 THEN zerotooneyr_&priordx = 1;
+		IF i = 2 THEN onetotwoyrs_&priordx = 1;
+		IF i = 3 THEN twotofiveyrs_&priordx = 1;
+		IF i = 4 THEN fivetotenyrs_&priordx = 1;
+		IF i = 5 THEN tentofifteenyrs_&priordx = 1;
+		IF i = 6 THEN fifteenormoreyrs_&priordx = 1;
+	RUN;
+
+
+	PROC SURVEYPHREG DATA = new4;
+		WHERE &weight >0 AND sample_sel&n.  = 1;
+		CLUSTER secu;
+		STRATA str15;
+		WEIGHT &weight;		
+		MODEL (start,stop)*dsm_&var.(0)	  =  	&country	
+												age18_29 	 age30_44		age45_59
+												sexf
+												zerotooneyr_&priordx 
+												onetotwoyrs_&priordx 
+												twotofiveyrs_&priordx 
+												fivetotenyrs_&priordx
+												tentofifteenyrs_&priordx 
+												fifteenormoreyrs_&priordx / RISKLIMIT TIES = EFRON;
+	RUN;
+%MEND;
+``` 
+
+
+### 7. Cumulative incidence curves
+<br> 
+
+**Cumulative incidence curves**
+<br>
+<br>
+
+```{sas, eval = FALSE}
+%MACRO cum_inc (type = , priordx = , n = , weight = ); 
+		ODS OUTPUT ProductLimitEstimates = aoo;
+		PROC LIFETEST DATA = new NELSON  ;
+			%IF &type = all %THEN %DO;
+			WHERE dsm_&priordx = 1 AND sample_sel&n.  = 1  ;
+			%END;
+			%IF &type = female %THEN %DO;
+			WHERE dsm_&priordx = 1 AND sample_sel&n.  = 1 AND sexf = 1  ;
+			%END;
+			%IF &type = male %THEN %DO;
+			WHERE dsm_&priordx = 1 AND sample_sel&n.  = 1 AND sexm = 1  ;
+			%END;
+			TIME tso*c_new_&priordx._&var.(0);
+			FREQ &weight;
+		RUN;
+	
+		DATA aoo1;
+			SET aoo;
+			IF CumHaz ~= .; 
+		RUN;
+		DATA aoo1_&type.;
+			SET aoo1;
+			n_CumHaz = CumHaz*100;
+			lower_CL = (CumHaz-1.96*StdErrCumHaz)*100;
+			upper_CL = (CumHaz+1.96*StdErrCumHaz)*100;
+			%IF &type = all %THEN %DO;
+    			w = 1;
+			%END;
+			%IF &type = female %THEN %DO;
+			w = 2;
+			%END;
+			%IF &type = male %THEN %DO;
+			w = 3;
+			%END;
+			tso1 = ROUND(tso);
+		RUN; 
+
+		PROC PRINT DATA = aoo1_&type.; TITLE "Original";RUN;
+		
+	%MEND b;
+	%b(type = all)
+	%b(type = female)
+	%b(type = male)
+	;
+	
+	DATA aoo2_&k.;
+		SET aoo1_all aoo1_female aoo1_male;
+	RUN;
+	PROC PRINT DATA = aoo2_&k.;RUN;
+	
+	DATA aoo2_&k.;
+		LENGTH dx $50.;
+		SET aoo2_&k.;
+		IF tso = 0 THEN DELETE;
+		dx = "&dx.";
+	RUN; 
+	
+
+ODS PDF FILE = "mde_&var..pdf";
+OPTIONS ORIENTATION = LANDSCAPE NONUMBER;
+ODS ESCAPECHAR "~";
+
+PROC FORMAT;
+	VALUE gfmt 	1 = "All"
+			2 = "Females"
+			3 = "Males"
+	;
+RUN;
+
+AXIS1 LABEL = (F = DUPLEX H = 1.9 A = 90 "Cumulative Incidence per 100 People")
+      ORDER = (0 TO 50 BY 5)
+      MINOR = (N = 4)
+      VALUE = (H = 1.9);
+AXIS2 LABEL = (F = DUPLEX H = 1.9 "Time since first diagnosis of MDE (years)")
+      ORDER = (0 TO 40 BY 5)
+      MINOR = (N = 4)
+      VALUE = (H = 1.9);
+LEGEND1 POSITION = (INSIDE TOP LEFT)  MODE = PROTECT LABEL = (H = 1.5 '  ') VALUE =(H=1.5) FRAME DOWN = 4;
+SYMBOL1 CV = BLACK W = 3  LINE = 20  I = JOIN;
+SYMBOL4 CV = RED W = 3 LINE = 1 I = JOIN;
+SYMBOL5 CV = BLUE W = 3 LINE = 8 I = JOIN;
+
+ODS LISTING CLOSE; 
+PROC GPLOT DATA = aoo2;
+    PLOT n_CumHaz*tso1= w  /LEGEND = LEGEND1 VAXIS = AXIS1 HAXIS = AXIS2 ;
+    FORMAT w gfmt.;
+    TITLE " ";
+ODS NOPTITLE;
+RUN;
+QUIT;
+ODS LISTING;
+TITLE1;
+TITLE2;
+ 
+QUIT;
+ODS PDF CLOSE;
+%MEND;
 ```
