@@ -648,6 +648,12 @@ time.so<-c("0","1","1","1")
 time.pds<-c("0","0","0","0")
 time.sad<-c("0","0","1","1")
 time.sp<-c("0","0","0","0")
+
+d<- data.frame(respondent, age, start, stop,time, time.mde, time.so, time.pds, time.sad, time.sp, time.ala)
+ 
+d %>% 
+  knitr::kable(format = "html")%>%
+  kable_styling()
 ```
 
 
