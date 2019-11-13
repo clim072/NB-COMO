@@ -650,29 +650,6 @@ time.sad<-c("0","0","1","1")
 time.sp<-c("0","0","0","0")
 ```
 
-<br>
-Respondent 1002 developed major depression at age 35 with specific phobia at age 9, alcohol abuse at age 22, panic disorder at age 33 prior to his interview at age 70. 
-
-
-```{r, echo = FALSE}
-respondent<- c("1002", " "," "," "," "," ", " "," "," "," ")
-age<- c(70," "," "," "," "," "," "," "," "," ")
-start <- c("1","9","22","33", "35", "36", "38", "43", "53", "68")
-stop <- c("9","22","33", "35", "36", "38", "43", "53","68", "70")
-time <-c("0","0","0","0", "0-1 year", "1-2 years", "2-5 years", "5-10 years", "10-15 years", "> 15 years")
-time.mde<-c("0","0","0","0", "1","1","1", "1","1","1")
-time.ala<-c("0","0","1","1", "1","1","1", "1","1","1")
-time.so<-c("0","0","0","0", "0","0","0","0","0","0")
-time.pds<-c("0","0","0","1", "1","1","1", "1","1","1")
-time.sad<-c("0","0","0","0","0","0","0","0","0","0")
-time.sp<-c("0","1","1","1", "1","1","1", "1","1","1")
-
-d<- data.frame(respondent, age, start, stop,time, time.mde, time.so, time.pds, time.sad, time.sp, time.ala)
- 
-d %>% 
-  knitr::kable(format = "html")%>%
-  kable_styling()
-```
 
 
 ### 5. Overall hazard ratios
