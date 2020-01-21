@@ -1,9 +1,9 @@
 ### Welcome to the repo 
 
 
-This repo contains SAS codes for all the analysis performed for the following paper:
+This repo contains SAS codes and supplementary materials for the following paper:
 
-McGrath et al (20xx) **_Comorbidity within mental disorders: a comprehensive analysis based on 145,990 survey respondents from 27 countries_**
+McGrath et al **_Comorbidity within mental disorders: a comprehensive analysis based on 145,990 survey respondents from 27 countries_**
 
 
 The data came from the [World Mental Health Surveys Initiative](https://www.hcp.med.harvard.edu/wmh/). More details on each survey within the consortium can be found [here](https://www.hcp.med.harvard.edu/wmh/national_sample.php).
