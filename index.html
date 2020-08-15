@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 
 <head>
 
 <meta charset="utf-8" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
@@ -339,6 +338,7 @@ summary {
   border: none;
   display: inline-block;
   border-radius: 4px;
+  background-color: transparent;
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li {
@@ -377,8 +377,8 @@ summary {
 
 <p><br></p>
 <p>This document is a supplementary material for the following paper:</p>
-<p>McGrath <em>et al.</em> (20xx) <strong>Comorbidity within mental disorders: a comprehensive analysis based on 145,990 survey respondents from 27 countries</strong></p>
-<p><strong>Authors:</strong> <a href="https://qbi.uq.edu.au/profile/745/john-mcgrath">John McGrath</a>, <a href="https://qbi.uq.edu.au/profile/1186/carmen-lim">Carmen Lim</a>, <a href="www.yan-holtz.com">Yan Holtz</a>, <a href="https://pure.au.dk/portal/en/persons/oleguer-planaripoll(bdf4b27a-e767-49e7-9c8f-3314033a15b2).html">Oleguer Plana-Ripoll</a>, <a href="https://qbi.uq.edu.au/profile/805/sukanta-saha">Sukanta Saha</a>, <a href="https://pure.au.dk/portal/en/persons/natalie-momen(72236ead-7aad-4a1f-9f1e-e199e3f6ad8e).html">Natalie Momen</a>,…,<a href="https://hcp.hms.harvard.edu/people/ronald-c-kessler">Ron Kessler</a>, <a href="https://www.rug.nl/staff/peter.de.jonge/">Peter de Jonge</a></p>
+<p>McGrath <em>et al.</em> (2020) <strong>Comorbidity within mental disorders: a comprehensive analysis based on 145,990 survey respondents from 27 countries.</strong> <em>Epidemiology and Psychiatric Sciences</em></p>
+<p><strong>Authors:</strong> <a href="https://qbi.uq.edu.au/profile/745/john-mcgrath">John McGrath</a>, <a href="https://orcid.org/0000-0003-1595-6307">Carmen Lim</a>, <a href="https://pure.au.dk/portal/en/persons/oleguer-planaripoll(bdf4b27a-e767-49e7-9c8f-3314033a15b2).html">Oleguer Plana-Ripoll</a>, <a href="https://www.yan-holtz.com">Yan Holtz</a>, <a href="https://pure.au.dk/portal/en/persons/esben-agerbo(5b08ed69-ad64-469f-a5b3-3407bf3c4b04).html">Esben Agerbo</a>, <a href="https://pure.au.dk/portal/en/persons/natalie-momen(72236ead-7aad-4a1f-9f1e-e199e3f6ad8e).html">Natalie Momen</a>,…,<a href="https://hcp.hms.harvard.edu/people/ronald-c-kessler">Ron Kessler</a>, <a href="https://www.rug.nl/staff/peter.de.jonge/">Peter de Jonge</a></p>
 <p><br></p>
 <p><strong>Preamble:</strong> <br> <br> The <a href="https://www.hcp.med.harvard.edu/wmh/">WHO World Mental Health Surveys Initiative</a> have coordinated a series of general population surveys to estimate the prevalence of mental disorders, to evaluate risk factors for targeted interventions, and to study patterns of barriers to service use. This paper estimates the associations between 24 DSM-IV mental disorders based on retrospectively reported age-of-onset from 27 surveys. We have examined all 576 logically possible temporally-ordered pairwise associations using Cox Proportional Hazards model. For replication purposes, we have provided <strong>SAS codes</strong> to estimate:</p>
 <ul>
@@ -2054,7 +2054,7 @@ AXIS2 LABEL = (F = DUPLEX H = 1.9 &quot;Time since first diagnosis of MDE (years
       ORDER = (0 TO 40 BY 5)
       MINOR = (N = 4)
       VALUE = (H = 1.9);
-LEGEND1 POSITION = (INSIDE TOP LEFT)  MODE = PROTECT LABEL = (H = 1.5 &#39;  &#39;) VALUE =(H=1.5) FRAME DOWN = 4;
+LEGEND1 POSITION = (INSIDE TOP LEFT)  MODE = PROTECT LABEL = (H = 1.5 '  ') VALUE =(H=1.5) FRAME DOWN = 4;
 SYMBOL1 CV = BLACK W = 3  LINE = 20  I = JOIN;
 SYMBOL4 CV = RED W = 3 LINE = 1 I = JOIN;
 SYMBOL5 CV = BLUE W = 3 LINE = 8 I = JOIN;
