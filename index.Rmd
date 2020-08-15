@@ -15,9 +15,9 @@ library(kableExtra)
 
 This document is a supplementary material for the following paper: 
 
-McGrath *et al.* (2020) **Comorbidity within mental disorders: a comprehensive analysis based on 145,990 survey respondents from 27 countries**
+McGrath *et al.* (2020) **Comorbidity within mental disorders: a comprehensive analysis based on 145,990 survey respondents from 27 countries.** *Epidemiology and Psychiatric Sciences*
 
-**Authors:** [John McGrath](https://qbi.uq.edu.au/profile/745/john-mcgrath), [Carmen Lim](https://qbi.uq.edu.au/profile/1186/carmen-lim), [Oleguer Plana-Ripoll](https://pure.au.dk/portal/en/persons/oleguer-planaripoll(bdf4b27a-e767-49e7-9c8f-3314033a15b2).html), [Yan Holtz](www.yan-holtz.com), [Esben Agerbo](https://pure.au.dk/portal/en/persons/esben-agerbo(5b08ed69-ad64-469f-a5b3-3407bf3c4b04).html), [Natalie Momen](https://pure.au.dk/portal/en/persons/natalie-momen(72236ead-7aad-4a1f-9f1e-e199e3f6ad8e).html),...,[Ron Kessler](https://hcp.hms.harvard.edu/people/ronald-c-kessler), [Peter de Jonge](https://www.rug.nl/staff/peter.de.jonge/)
+**Authors:** [John McGrath](https://qbi.uq.edu.au/profile/745/john-mcgrath), [Carmen Lim](https://orcid.org/0000-0003-1595-6307), [Oleguer Plana-Ripoll](https://pure.au.dk/portal/en/persons/oleguer-planaripoll(bdf4b27a-e767-49e7-9c8f-3314033a15b2).html), [Yan Holtz](https://www.yan-holtz.com), [Esben Agerbo](https://pure.au.dk/portal/en/persons/esben-agerbo(5b08ed69-ad64-469f-a5b3-3407bf3c4b04).html), [Natalie Momen](https://pure.au.dk/portal/en/persons/natalie-momen(72236ead-7aad-4a1f-9f1e-e199e3f6ad8e).html),...,[Ron Kessler](https://hcp.hms.harvard.edu/people/ronald-c-kessler), [Peter de Jonge](https://www.rug.nl/staff/peter.de.jonge/)
 
 <br>
 
